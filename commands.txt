@@ -1,0 +1,11 @@
+1.npm install vue
+2.npm install admin-lte@^3.2 --save
+3.npm install vue-router
+4.npm install @vitejs/plugin-vue
+5.npm install axios
+6.npm install jquery
+7.npm install sweetalert2
+8.npm install vuex
+9.npm install moment
+10.npm install tempusdominus-bootstrap-4
+10.npm install vue-cropperjs

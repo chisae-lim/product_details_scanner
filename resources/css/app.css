@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback');
+@import 'admin-lte/plugins/fontawesome-free/css/all.min.css';
+@import 'admin-lte/dist/css/adminlte.min.css';
+
+#cropper-modal img {
+    max-width: 0%;
+    height: auto;
+}
+
+.preview {
+    overflow: hidden;
+    width: 189px;
+    height: 189px;
+}
+
+.scrollable {
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+}
