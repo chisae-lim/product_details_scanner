@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * Class Unit
  * 
  * @property int $id_unit
- * @property string $unit
- * @property string $short_name
+ * @property string $name
+ * @property string $label
  * 
  * @property Collection|Product[] $products
  *
@@ -32,8 +32,8 @@ class Unit extends Model
 	];
 
 	protected $fillable = [
-		'unit',
-		'short_name'
+		'name',
+		'label'
 	];
 
 	public function products(): HasMany

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * Class Color
  * 
  * @property int $id_color
- * @property string $color
+ * @property string $name
  * @property string $code
  * @property string $status
  * 
@@ -33,9 +33,8 @@ class Color extends Model
 	];
 
 	protected $fillable = [
-		'color',
+		'name',
 		'code',
-		'status'
 	];
 
 	public function products(): BelongsToMany

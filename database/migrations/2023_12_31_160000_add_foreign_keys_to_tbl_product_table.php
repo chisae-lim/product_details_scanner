@@ -52,7 +52,6 @@ return new class extends Migration {
             $table->dropForeign('product_ibfk_2');
             $table->dropForeign('product_ibfk_3');
             $table->dropForeign('product_ibfk_4');
-            $table->dropForeign('product_ibfk_5');
             $table->dropForeign('product_ibfk_10');
             $table->dropForeign('product_ibfk_20');
         });

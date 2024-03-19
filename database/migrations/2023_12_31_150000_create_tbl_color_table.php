@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('tbl_color', function (Blueprint $table) {
             $table->integer('id_color', true);
-            $table->string('color', 20);
+            $table->string('name', 20);
             $table->string('code', 10);
         });
     }

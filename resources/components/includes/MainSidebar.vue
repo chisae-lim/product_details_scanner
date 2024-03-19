@@ -24,9 +24,58 @@
                     data-accordion="false">
                     <li class="nav-item">
                         <router-link :to="{ name: 'dashboard' }" active-class="active" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
+                            <!-- <i class="nav-icon fas fa-th"></i> -->
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
                                 Dashboard
+                            </p>
+                        </router-link>
+                    </li>
+                    <li v-if="validUser('manage.products')" class="nav-item">
+                        <router-link :to="{ name: 'manage.products' }" active-class="active" class="nav-link">
+                            <i class="nav-icon fas fa-gifts"></i>
+                            <p>
+                                Products
+                            </p>
+                        </router-link>
+                    </li>
+                    <li v-if="validUser('manage.scales')" class="nav-item">
+                        <router-link :to="{ name: 'manage.scales' }" active-class="active" class="nav-link">
+                            <i class="nav-icon fas fa-ruler-combined"></i>
+                            <p>
+                                Dimension Scales
+                            </p>
+                        </router-link>
+                    </li>
+                    <li v-if="validUser('manage.units')" class="nav-item">
+                        <router-link :to="{ name: 'manage.units' }" active-class="active" class="nav-link">
+                            <i class="nav-icon fas fa-boxes"></i>
+                            <p>
+                                Item Uits
+                            </p>
+                        </router-link>
+                    </li>
+                    <li v-if="validUser('manage.brands')" class="nav-item">
+                        <router-link :to="{ name: 'manage.brands' }" active-class="active" class="nav-link">
+                            <i class="nav-icon fab fa-font-awesome-flag"></i>
+                            <p>
+                                Brands
+                            </p>
+                        </router-link>
+                    </li>
+                    <li v-if="validUser('manage.categories')" class="nav-item">
+                        <router-link :to="{ name: 'manage.categories' }" active-class="active" class="nav-link">
+                            <i class="nav-icon fas fa-sort-alpha-down"></i>
+                            <p>
+                                Categories
+                            </p>
+                        </router-link>
+                    </li>
+                    <li v-if="validUser('manage.colors')" class="nav-item">
+                        <router-link :to="{ name: 'manage.colors' }" active-class="active" class="nav-link">
+                            <i class="nav-icon fas fa-palette"></i>
+                            <p>
+                                Colors
                             </p>
                         </router-link>
                     </li>

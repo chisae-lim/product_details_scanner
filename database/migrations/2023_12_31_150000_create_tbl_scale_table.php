@@ -12,18 +12,18 @@ return new class extends Migration {
     {
         Schema::create('tbl_scale', function (Blueprint $table) {
             $table->integer('id_scale', true);
-            $table->string('scale', 50);
-            $table->string('short_name', 10);
+            $table->string('name', 50);
+            $table->string('label', 10);
         });
 
         $scales = [
             [
-                'scale' => 'Meter',
-                'short_name' => 'M'
+                'name' => 'Meter',
+                'label' => 'M'
             ],
             [
-                'scale' => 'Centimeter',
-                'short_name' => 'Cm'
+                'name' => 'Centimeter',
+                'label' => 'Cm'
             ],
 
         ];

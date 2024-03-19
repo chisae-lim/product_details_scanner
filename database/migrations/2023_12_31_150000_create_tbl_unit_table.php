@@ -12,46 +12,46 @@ return new class extends Migration {
     {
         Schema::create('tbl_unit', function (Blueprint $table) {
             $table->integer('id_unit', true);
-            $table->string('unit', 50);
-            $table->string('short_name', 10);
+            $table->string('name', 50);
+            $table->string('label', 10);
         });
 
         $units = [
             [
-                'unit' => 'Piece',
-                'short_name' => 'Piece'
+                'name' => 'Piece',
+                'label' => 'Piece'
             ],
             [
-                'unit' => 'Pack',
-                'short_name' => 'Pack'
+                'name' => 'Pack',
+                'label' => 'Pack'
             ],
             [
-                'unit' => 'Set',
-                'short_name' => 'Set'
+                'name' => 'Set',
+                'label' => 'Set'
             ],
             [
-                'unit' => 'Pair',
-                'short_name' => 'Pair'
+                'name' => 'Pair',
+                'label' => 'Pair'
             ],
             [
-                'unit' => 'Dozen',
-                'short_name' => 'Dozen'
+                'name' => 'Dozen',
+                'label' => 'Dozen'
             ],
             [
-                'unit' => 'Case',
-                'short_name' => 'Case'
+                'name' => 'Case',
+                'label' => 'Case'
             ],
             [
-                'unit' => 'Box',
-                'short_name' => 'Box'
+                'name' => 'Box',
+                'label' => 'Box'
             ],
             [
-                'unit' => 'Meter',
-                'short_name' => 'M'
+                'name' => 'Meter',
+                'label' => 'M'
             ],
             [
-                'unit' => 'Centimeter',
-                'short_name' => 'Cm'
+                'name' => 'Centimeter',
+                'label' => 'Cm'
             ],
         ];
         foreach ($units as $unit) {

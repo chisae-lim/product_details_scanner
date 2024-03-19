@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * Class Scale
  * 
  * @property int $id_scale
- * @property string $scale
- * @property string $short_name
+ * @property string $name
+ * @property string $label
  * 
  * @property Collection|Product[] $products
  *
@@ -32,8 +32,8 @@ class Scale extends Model
 	];
 
 	protected $fillable = [
-		'scale',
-		'short_name'
+		'name',
+		'label'
 	];
 
 	public function products(): HasMany
