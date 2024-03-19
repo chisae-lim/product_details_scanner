@@ -10,19 +10,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class ProductColor
+ * Class Variant
  * 
- * @property int $id_product_color
+ * @property int $id_variant
  * @property int $id_product
  * @property int $id_color
  * 
  *
  * @package App\Models
  */
-class ProductColor extends Model
+class Variant extends Model
 {
-	protected $table = 'tbl_product_color';
-	protected $primaryKey = 'id_product_color';
+	protected $table = 'tbl_variant';
+	protected $primaryKey = 'id_variant';
 	public $timestamps = false;
 
 	protected $casts = [
@@ -31,6 +31,7 @@ class ProductColor extends Model
 	];
 
 	protected $hidden = [
+		'id_variant',
 		'id_product',
 		'id_color'
 	];
@@ -40,12 +41,12 @@ class ProductColor extends Model
 		'id_color'
 	];
 
-	public function product(): BelongsTo
+	public function id_product(): BelongsTo
 	{
 		return $this->belongsTo(Product::class, 'id_product');
 	}
 
-	public function color(): BelongsTo
+	public function id_color(): BelongsTo
 	{
 		return $this->belongsTo(Color::class, 'id_color');
 	}

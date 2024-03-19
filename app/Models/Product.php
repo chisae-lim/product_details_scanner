@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * Class Product
  * 
  * @property int $id_product
- * @property string $code
- * @property string $name
+ * @property string $p_code
+ * @property string $bar_code
+ * @property string $name_en
+ * @property string $name_ch
  * @property float $price
  * @property string $description
  * @property int $length
@@ -43,10 +45,10 @@ class Product extends Model
 
 	protected $casts = [
 		'price' => 'float',
-		'length' => 'int',
-		'width' => 'int',
-		'height' => 'int',
-		'id_scale' => 'int',
+		// 'length' => 'int',
+		// 'width' => 'int',
+		// 'height' => 'int',
+		// 'id_scale' => 'int',
 		'id_unit' => 'int',
 		'id_category' => 'int',
 		'id_brand' => 'int',
@@ -64,14 +66,16 @@ class Product extends Model
 	];
 
 	protected $fillable = [
-		'code',
-		'name',
+		'p_code',
+		'bar_code',
+		'name_en',
+		'name_ch',
 		'price',
 		'description',
-		'length',
-		'width',
-		'height',
-		'id_scale',
+		// 'length',
+		// 'width',
+		// 'height',
+		// 'id_scale',
 		'id_unit',
 		'id_category',
 		'id_brand',
@@ -99,10 +103,10 @@ class Product extends Model
 		return $this->belongsTo(User::class, 'updated_by');
 	}
 
-	public function scale(): BelongsTo
-	{
-		return $this->belongsTo(Scale::class, 'id_scale');
-	}
+	// public function scale(): BelongsTo
+	// {
+	// 	return $this->belongsTo(Scale::class, 'id_scale');
+	// }
 
 	public function unit(): BelongsTo
 	{
@@ -111,7 +115,7 @@ class Product extends Model
 
 	public function colors(): BelongsToMany
 	{
-		return $this->belongsToMany(Color::class, 'tbl_product_color', 'id_product', 'id_color')
-					->withPivot('id_product_color');
+		return $this->belongsToMany(Color::class, 'tbl_variant', 'id_product', 'id_color')
+			->withPivot('id_variant');
 	}
 }

@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('tbl_product_color', function (Blueprint $table) {
-            $table->integer('id_product_color', true);
+        Schema::create('tbl_variant', function (Blueprint $table) {
+            $table->integer('id_variant', true);
             $table->integer('id_product')->index('id_product');
             $table->integer('id_color')->index('id_color');
         });
@@ -22,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_product_color');
+        Schema::dropIfExists('tbl_variant');
     }
 };

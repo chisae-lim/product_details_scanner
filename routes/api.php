@@ -8,6 +8,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\BrandController;
 use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\ScaleController;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ComponentController;
 

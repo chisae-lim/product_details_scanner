@@ -90,8 +90,9 @@ const columns = [
         accessorKey: 'code',
         header: '#',
         cell: (cell) => h('div', {
+            class: 'color-square mx-auto',
             style: { backgroundColor: cell.getValue(), color: cell.getValue() },
-        }, cell.getValue()),
+        }, null),
     },
     {
         accessorKey: 'action',
@@ -147,7 +148,6 @@ const onRowUpdated = (color) => {
 const onRowDeleted = (color) => {
     colors.value = colors.value.filter(obj => obj.id_color !== color.id_color);
 };
-
 
 async function generateColors() {
     LoadingModal();

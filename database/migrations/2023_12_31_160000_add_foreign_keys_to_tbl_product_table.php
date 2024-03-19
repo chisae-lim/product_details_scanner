@@ -21,10 +21,10 @@ return new class extends Migration {
                 ->foreign(['id_brand'], 'product_ibfk_2')
                 ->references(['id_brand'])
                 ->on('tbl_brand');
-            $table
-                ->foreign(['id_scale'], 'product_ibfk_3')
-                ->references(['id_scale'])
-                ->on('tbl_scale');
+            // $table
+            //     ->foreign(['id_scale'], 'product_ibfk_3')
+            //     ->references(['id_scale'])
+            //     ->on('tbl_scale');
             $table
                 ->foreign(['id_unit'], 'product_ibfk_4')
                 ->references(['id_unit'])
@@ -50,7 +50,7 @@ return new class extends Migration {
         Schema::table('tbl_product', function (Blueprint $table) {
             $table->dropForeign('product_ibfk_1');
             $table->dropForeign('product_ibfk_2');
-            $table->dropForeign('product_ibfk_3');
+            // $table->dropForeign('product_ibfk_3');
             $table->dropForeign('product_ibfk_4');
             $table->dropForeign('product_ibfk_10');
             $table->dropForeign('product_ibfk_20');

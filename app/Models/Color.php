@@ -39,7 +39,7 @@ class Color extends Model
 
 	public function products(): BelongsToMany
 	{
-		return $this->belongsToMany(Product::class, 'tbl_product_color', 'id_color', 'id_product')
-					->withPivot('id_product_color');
+		return $this->belongsToMany(Product::class, 'tbl_variant', 'id_color', 'id_product')
+					->withPivot('id_variant');
 	}
 }

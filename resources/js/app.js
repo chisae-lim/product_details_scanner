@@ -14,16 +14,10 @@ const store = createStore({
     state: {
         user: null,
         user_permissions: [],
-        titles: [],
-        degrees: [],
-        roles: [],
-        nationalities: [],
-        ethnicities: [],
-        genders: [],
-        shifts: [],
-        sessions: [],
-        session_types: [],
-        course_types: [],
+        scales: [],
+        units: [],
+        brands: [],
+        categories: [],
     },
     mutations: {
         refreshUser(state, user) {
@@ -57,104 +51,36 @@ const store = createStore({
                 ErrorModal(error);
             }
         },
-        async getTitles(store) {
-            LoadingModal();
+        async getScales(store) {
             try {
-                const res = await axios.get('/api/components/titles');
-                store.state.titles = res.data;
-                CloseModal();
+                const res = await axios.get('/api/manage/scales');
+                store.state.scales = res.data;
             } catch (error) {
-                ErrorModal(error);
+                throw error;
             }
         },
-        async getDegrees(store) {
-            LoadingModal();
+        async getUnits(store) {
             try {
-                const res = await axios.get('/api/components/degrees');
-                store.state.degrees = res.data;
-                CloseModal();
+                const res = await axios.get('/api/manage/units');
+                store.state.units = res.data;
             } catch (error) {
-                ErrorModal(error);
+                throw error;
             }
         },
-        async getRoles(store) {
-            LoadingModal();
+        async getBrands(store) {
             try {
-                const res = await axios.get('/api/components/roles');
-                store.state.roles = res.data;
-                CloseModal();
+                const res = await axios.get('/api/manage/brands');
+                store.state.brands = res.data;
             } catch (error) {
-                ErrorModal(error);
+                throw error;
             }
         },
-        async getNationalities(store) {
-            LoadingModal();
+        async getCategories(store) {
             try {
-                const res = await axios.get('/api/components/nationalities');
-                store.state.nationalities = res.data;
-                CloseModal();
+                const res = await axios.get('/api/manage/categories');
+                store.state.categories = res.data;
             } catch (error) {
-                ErrorModal(error);
-            }
-        },
-        async getEthnicities(store) {
-            LoadingModal();
-            try {
-                const res = await axios.get('/api/components/ethnicities');
-                store.state.ethnicities = res.data;
-                CloseModal();
-            } catch (error) {
-                ErrorModal(error);
-            }
-        },
-        async getGenders(store) {
-            LoadingModal();
-            try {
-                const res = await axios.get('/api/components/genders');
-                store.state.genders = res.data;
-                CloseModal();
-            } catch (error) {
-                ErrorModal(error);
-            }
-        },
-        async getShifts(store) {
-            LoadingModal();
-            try {
-                const res = await axios.get('/api/components/shifts');
-                store.state.shifts = res.data;
-                CloseModal();
-            } catch (error) {
-                ErrorModal(error);
-            }
-        },
-        async getSessions(store) {
-            LoadingModal();
-            try {
-                const res = await axios.get('/api/manage/sessions');
-                store.state.sessions = res.data;
-                CloseModal();
-            } catch (error) {
-                ErrorModal(error);
-            }
-        },
-        async getSessionTypes(store) {
-            LoadingModal();
-            try {
-                const res = await axios.get('/api/components/sessionTypes');
-                store.state.session_types = res.data;
-                CloseModal();
-            } catch (error) {
-                ErrorModal(error);
-            }
-        },
-        async getCourseTypes(store) {
-            LoadingModal();
-            try {
-                const res = await axios.get('/api/components/courseTypes');
-                store.state.course_types = res.data;
-                CloseModal();
-            } catch (error) {
-                ErrorModal(error);
+                throw error;
             }
         },
     }

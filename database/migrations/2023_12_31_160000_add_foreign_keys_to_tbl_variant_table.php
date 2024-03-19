@@ -10,14 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('tbl_product_color', function (Blueprint $table) {
+        Schema::table('tbl_variant', function (Blueprint $table) {
             $table
-                ->foreign(['id_product'], 'product_color_ibfk_1')
+                ->foreign(['id_product'], 'variant_ibfk_1')
                 ->references(['id_product'])
                 ->on('tbl_product')
                 ->onDelete('cascade');
             $table
-                ->foreign(['id_color'], 'product_color_ibfk_2')
+                ->foreign(['id_color'], 'variant_ibfk_2')
                 ->references(['id_color'])
                 ->on('tbl_color');
         });
@@ -28,9 +28,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('tbl_product_color', function (Blueprint $table) {
-            $table->dropForeign('product_color_ibfk_1');
-            $table->dropForeign('product_color_ibfk_2');
+        Schema::table('tbl_variant', function (Blueprint $table) {
+            $table->dropForeign('variant_ibfk_1');
+            $table->dropForeign('variant_ibfk_2');
         });
     }
 };

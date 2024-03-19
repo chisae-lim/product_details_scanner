@@ -39,14 +39,14 @@
                             </p>
                         </router-link>
                     </li>
-                    <li v-if="validUser('manage.scales')" class="nav-item">
+                    <!-- <li v-if="validUser('manage.scales')" class="nav-item">
                         <router-link :to="{ name: 'manage.scales' }" active-class="active" class="nav-link">
                             <i class="nav-icon fas fa-ruler-combined"></i>
                             <p>
                                 Dimension Scales
                             </p>
                         </router-link>
-                    </li>
+                    </li> -->
                     <li v-if="validUser('manage.units')" class="nav-item">
                         <router-link :to="{ name: 'manage.units' }" active-class="active" class="nav-link">
                             <i class="nav-icon fas fa-boxes"></i>
