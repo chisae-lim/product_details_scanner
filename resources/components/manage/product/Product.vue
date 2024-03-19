@@ -325,6 +325,7 @@ onMounted(async () => {
             PRODUCT_ERR[key] = null;
         }
         PRODUCT.id_colors = [];
+        PRODUCT.images = [];
         selected_colors.value = [];
     });
 
