@@ -99,12 +99,12 @@ app.mount('#app');
 router.beforeEach(async (to, from) => {
     LoadingModal();
     const loggedIn = await isAuthorized();
-    if ((!loggedIn && to.name !== 'login') || to.name === 'logout') {
-        if (await logUserOut()) return { name: 'login' };
+    if ((!loggedIn && !['index', 'login'].includes(to.name)) || to.name === 'logout') {
+        if (await logUserOut()) return { name: 'index' };
     }
 
     if (loggedIn) {
-        if (to.name === 'login') {
+        if (['index', 'login'].includes(to.name)) {
             return { name: 'dashboard' };
         }
         const user = loggedIn.data.user;

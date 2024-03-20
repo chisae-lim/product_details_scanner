@@ -2,6 +2,7 @@
 import Login from '../components/auth/Login.vue';
 import Profile from '../components/profile/Profile.vue';
 import Dashboard from '../components/dashboard/Dashboard.vue';
+import Index from '../components/index/Index.vue';
 import Users from '../components/manage/users/Users.vue';
 import Brand from '../components/manage/brand/Brand.vue';
 import Category from '../components/manage/category/Category.vue';
@@ -28,6 +29,11 @@ export default [
     {
         path: '/logout',
         name: 'logout',
+    },
+    {
+        path: '/',
+        name: 'index',
+        component: Index,
     },
     {
         path: '/login',
