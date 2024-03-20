@@ -15,32 +15,33 @@
             <div class="row justify-content-center">
                 <div class="mt-5 col-lg-6 col-md-8 col-sm-10">
                     <div class="card">
-                        <div class="d-flex justify-content-center m-3">
-                            <img :src="logoImage" class="brand-image img-circle" style="width: 200px;" alt="logo image">
+                        <div class="d-flex justify-content-center mt-3">
+                            <img :src="logoImage" :hidden="scanning" class="brand-image border img-circle"
+                                style="width: 200px;" alt="logo image">
                         </div>
-                        <form @submit.prevent="searchBox.select()">
+                        <div v-if="scanning" class="mx-auto p-3" style="max-width: 400px;">
+                            <StreamBarcodeReader @decode="onDecode">
+                            </StreamBarcodeReader>
+                        </div>
+                        <form @submit.prevent="searchProduct()">
                             <div class="card-body">
                                 <div class="input-group">
                                     <span class="input-group-prepend">
-                                        <button @click="onScanClicked()" class="btn     btn-outline-primary"
+                                        <button @click="onScanBtnClicked()" class="btn     btn-outline-primary"
                                             type="button">
                                             <i class="bi bi-upc-scan"></i>
                                         </button>
                                     </span>
-                                    <input ref="searchBox" @click="searchBox.select()" class="form-control py-2"
-                                        type="search" placeholder="Enter code">
+                                    <input ref="searchBox" v-model="searchText" class="form-control py-2" type="search"
+                                        placeholder="Enter code">
                                     <span class="input-group-append">
-                                        <button class="btn btn-outline-primary" type="button">
+                                        <button class="btn btn-outline-primary" type="submit">
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </span>
                                 </div>
                             </div>
                         </form>
-                        <div class="mx-auto">
-                            <StreamBarcodeReader v-if="scanning" @decode="onDecode" @loaded="onLoaded">
-                            </StreamBarcodeReader>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -91,11 +92,17 @@
 </style>
 
 <script setup>
+import { useRouter } from 'vue-router';
+
 import { StreamBarcodeReader } from "vue-barcode-reader";
 import background from "../../../public/assets/images/background.jpg";
 import logoImage from "../../../public/assets/images/logo.jpg";
 import { onMounted, ref } from 'vue';
+
+const router = useRouter();
+
 const searchBox = ref(null);
+const searchText = ref(null);
 const scanning = ref(false);
 
 onMounted(() => {
@@ -105,18 +112,47 @@ onMounted(() => {
     });
 })
 
-const onScanClicked = async () => {
+const onScanBtnClicked = async () => {
+    LoadingModal();
     await navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
             scanning.value = !scanning.value;
+            CloseModal();
         })
         .catch(error => {
-            console.error('Error accessing camera:', error);
+            MessageModal('error', 'Oops...', 'Error accessing camera: Permission denied!.');
         });
 
     // $('#scanner-modal').modal('show');
 }
-const onDecode = (result) => { console.log(result) }
+
 const onLoaded = (result) => { console.log(result) }
-const onError = (result) => { console.log(result) }
+
+const onDecode = async (result) => {
+    searchText.value = result;
+}
+async function searchProduct() {
+    if (searchText.value !== null) {
+        searchBox.value.select();
+        try {
+            const res = await getProductByCode(searchText.value);
+            const product = res.data;
+            if (product !== '') {
+                return window.open('/login', '_blank');
+            }
+            return MessageModal('error', 'Oops...', 'Something went wrong!.');
+        } catch (error) {
+            scanning.value = false;
+            MessageModal('error', 'Oops...', 'Something went wrong!.');
+        }
+    }
+}
+async function getProductByCode(code) {
+    try {
+        const res = await axios.get('/api/product/search/code/' + code);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+}
 </script>

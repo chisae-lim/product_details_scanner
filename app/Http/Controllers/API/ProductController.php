@@ -323,4 +323,9 @@ class ProductController extends Controller
             200,
         );
     }
+
+    function getProductByCode(Request $request, $code)
+    {
+        return Product::where('p_code', $code)->orWhere('bar_code', $code)->first();
+    }
 }
