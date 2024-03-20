@@ -20,3 +20,4 @@ use App\Http\Controllers\AppController;
 // });
 
 Route::get('{path}', AppController::class)->where('path', '^(?!api).*$');
+// Route::get('{path}', AppController::class)->where('path', '^(?!api|public).*$');

@@ -7,8 +7,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property Carbon|null $updated_at
  * 
  * @property Collection|Color[] $colors
+ * @property Collection|ProductImage[] $images
  *
  * @package App\Models
  */
@@ -57,6 +59,7 @@ class Product extends Model
 	];
 
 	protected $hidden = [
+		'pivot',
 		'id_scale',
 		'id_unit',
 		'id_category',
@@ -117,5 +120,10 @@ class Product extends Model
 	{
 		return $this->belongsToMany(Color::class, 'tbl_variant', 'id_product', 'id_color')
 			->withPivot('id_variant');
+	}
+
+	public function images(): HasMany
+	{
+		return $this->hasMany(ProductImage::class, 'id_product');
 	}
 }

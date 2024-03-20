@@ -12,19 +12,19 @@ return new class extends Migration {
     {
         Schema::create('tbl_product', function (Blueprint $table) {
             $table->integer('id_product', true);
-            $table->string('p_code', 250);
-            $table->string('bar_code', 250);
-            $table->string('name_en', 250);
-            $table->string('name_ch', 250);
+            $table->string('p_code', 50);
+            $table->string('bar_code', 50);
+            $table->string('name_en', 150);
+            $table->string('name_ch', 150);
             $table->decimal('price', 10, 3);
-            $table->string('description', 500);
+            $table->string('description', 500)->nullable();
             // $table->integer('length');
             // $table->integer('width');
             // $table->integer('height');
             // $table->integer('id_scale')->index('id_scale');
             $table->integer('id_unit')->index('id_unit');
-            $table->integer('id_category')->index('id_category');
-            $table->integer('id_brand')->index('id_brand');
+            $table->integer('id_category')->index('id_category')->nullable();
+            $table->integer('id_brand')->index('id_brand')->nullable();
             $table->integer('created_by')->index('created_by');
             $table->integer('updated_by')->index('updated_by');
             $table->timestamps();

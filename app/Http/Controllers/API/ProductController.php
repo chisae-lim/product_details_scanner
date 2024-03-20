@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
 use Throwable;
 use App\Models\Product;
+use App\Models\Variant;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Traits\FuncAssets;
 use App\Http\Traits\ErrorAssets;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 
 class ProductController extends Controller
 {
@@ -18,7 +23,7 @@ class ProductController extends Controller
         $user = $request->user;
         $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
 
-        return Product::with(['created_by', 'updated_by'])
+        return Product::with(['images', 'colors', 'category', 'unit', 'brand', 'created_by', 'updated_by'])
             ->get()
             ->makeVisible(['created_by', 'updated_by']);
     }
@@ -26,63 +31,102 @@ class ProductController extends Controller
     {
         $user = $request->user;
         $user_id_perm = $this->permittedUser($user, [1]);
+        $customErrorMessage = [
+            'p_code.required' => 'Product code is required.',
+            'bar_code.required' => 'Barcode is required.',
+            'bar_code.regex' => 'Barcode must contain only numeric characters.',
+            'name_en.required' => 'English name is required.',
+            'name_ch.required' => 'Chinese name is required.',
+            'price.required' => 'Price is required.',
+            'price.numeric' => 'Price must be a numeric value.',
+        ];
         $request->validate([
-            'code' => 'required',
-            'name' => 'required',
+            'p_code' => 'required',
+            'bar_code' => 'required|regex:/^[0-9]+$/',
+            'name_en' => 'required',
+            'name_ch' => 'required',
             'price' => 'required|numeric',
-            'description' => 'required',
-            'length' => 'sometime|numeric',
-            'width' => 'nullable|required_with:length|numeric',
-            'height' => 'nullable|required_with:width|numeric',
-        ]);
-
+        ], $customErrorMessage);
         ###
-        $code = $request->code;
-        $name = $request->name;
+        $p_code = $request->p_code;
+        $bar_code = $request->bar_code;
+        $name_en = $request->name_en;
+        $name_ch = $request->name_ch;
         $price = $request->price;
         $description = $request->description;
-        $length = $request->length;
-        $width = $request->width;
-        $height = $request->height;
-        $id_scale = $request->id_scale;
         $id_unit = $request->id_unit;
         $id_category = $request->id_category;
         $id_brand = $request->id_brand;
+        $id_colors = $request->id_colors;
+        $images = $request->images;
 
+        $exists = Product::where('p_code', $p_code)
+            ->orWhere('bar_code', $bar_code)
+            ->get();
+
+        $exceptions = [];
+        foreach ($exists as $exist) {
+            if (strcasecmp($exist->p_code, $p_code) === 0) {
+                $exceptions['p_code'] = 'The Product Code is already existed.';
+            }
+            if (strcasecmp($exist->bar_code, $bar_code) === 0) {
+                $exceptions['bar_code'] = 'The Bar Code is already existed.';
+            }
+        }
+        if (!empty ($exceptions)) {
+            throw ValidationException::withMessages($exceptions);
+        }
         try {
-            $product = Product::firstOrCreate(
-                [
-                    'code' => $code,
-                ],
-                [
-                    'name' => $name,
-                    'price' => $price,
-                    'description' => $description,
-                    'length' => $length,
-                    'width' => $width,
-                    'height' => $height,
-                    'id_scale' => $id_scale,
-                    'id_unit' => $id_unit,
-                    'id_category' => $id_category,
-                    'id_brand' => $id_brand,
-                ],
-            );
+            DB::beginTransaction();
+            $image_names = [];
+            if (!empty ($images)) {
+                $index = 0;
+                foreach ($images as $image) {
+                    $image_names[] = $this->storeImage($image, 'products', $index);
+                    $index++;
+                }
+            }
+            $product = Product::create([
+                'p_code' => $p_code,
+                'bar_code' => $bar_code,
+                'name_en' => $name_en,
+                'name_ch' => $name_ch,
+                'price' => $price,
+                'description' => $description,
+                'id_unit' => $id_unit,
+                'id_brand' => $id_brand,
+                'id_category' => $id_category,
+                'created_by' => $user->id_user,
+                'updated_by' => $user->id_user,
+            ]);
+            foreach ($id_colors as $id_color) {
+                Variant::create([
+                    'id_product' => $product->id_product,
+                    'id_color' => $id_color,
+                ]);
+            }
+            foreach ($image_names as $image_name) {
+                ProductImage::create([
+                    'id_product' => $product->id_product,
+                    'name' => $image_name,
+                ]);
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->requirementErrorMsg();
         } catch (Throwable $th) {
+            DB::rollback();
             return $this->requirementErrorMsg();
         }
-        if (!$product->wasRecentlyCreated) {
-            throw ValidationException::withMessages([
-                'code' => 'The code is already existed!.',
-            ]);
-        } else {
-            $product = Product::where('id_product', $product->id_product)
-                ->with(['created_by', 'updated_by'])
-                ->first();
-        }
+        $product = Product::where('id_product', $product->id_product)
+            ->with(['images', 'colors', 'category', 'unit', 'brand', 'created_by', 'updated_by'])
+            ->first();
         return response(
             [
                 'message' => 'The product has been created.',
                 'product' => $product->makeVisible(['created_by', 'updated_by']),
+                'name' => $image_names
             ],
             200,
         );
@@ -91,60 +135,139 @@ class ProductController extends Controller
     {
         $user = $request->user;
         $user_id_perm = $this->permittedUser($user, [1]);
+        $customErrorMessage = [
+            'p_code.required' => 'Product code is required.',
+            'bar_code.required' => 'Barcode is required.',
+            'bar_code.regex' => 'Barcode must contain only numeric characters.',
+            'name_en.required' => 'English name is required.',
+            'name_ch.required' => 'Chinese name is required.',
+            'price.required' => 'Price is required.',
+            'price.numeric' => 'Price must be a numeric value.',
+        ];
         $request->validate([
-            'code' => 'required',
-            'name' => 'required',
+            'p_code' => 'required',
+            'bar_code' => 'required|regex:/^[0-9]+$/',
+            'name_en' => 'required',
+            'name_ch' => 'required',
             'price' => 'required|numeric',
-            'description' => 'required',
-            'length' => 'sometime|numeric',
-            'width' => 'nullable|required_with:length|numeric',
-            'height' => 'nullable|required_with:width|numeric',
-        ]);
+        ], $customErrorMessage);
 
         ###
         $id_product = $request->id_product;
-        $code = $request->code;
-        $name = $request->name;
+        $p_code = $request->p_code;
+        $bar_code = $request->bar_code;
+        $name_en = $request->name_en;
+        $name_ch = $request->name_ch;
         $price = $request->price;
         $description = $request->description;
-        $length = $request->length;
-        $width = $request->width;
-        $height = $request->height;
-        $id_scale = $request->id_scale;
         $id_unit = $request->id_unit;
         $id_category = $request->id_category;
         $id_brand = $request->id_brand;
+        $id_colors = $request->id_colors;
+        $images = $request->images;
+        $edited_images = $request->edited_images;
+        $original_images = $request->original_images;
 
-        $existed = Product::where('code', $code)
+        $exists = Product::where(function ($q) use ($p_code, $bar_code) {
+            $q->where('p_code', $p_code)
+                ->orWhere('bar_code', $bar_code);
+        })
             ->where('id_product', '<>', $id_product)
-            ->first();
-        if ($existed) {
-            throw ValidationException::withMessages([
-                'code' => 'The code is already existed!.',
-            ]);
+            ->get();
+
+        $exceptions = [];
+        foreach ($exists as $exist) {
+            if (strcasecmp($exist->p_code, $p_code) === 0) {
+                $exceptions['p_code'] = 'The Product Code is already existed.';
+            }
+            if (strcasecmp($exist->bar_code, $bar_code) === 0) {
+                $exceptions['bar_code'] = 'The Bar Code is already existed.';
+            }
         }
+        if (!empty ($exceptions)) {
+            throw ValidationException::withMessages($exceptions);
+        }
+
         try {
+            DB::beginTransaction();
+
             $product = Product::where('id_product', $id_product)
-                ->with(['created_by', 'updated_by'])
                 ->first();
-            $product->code = $code;
-            $product->name = $name;
+            $old_id_product_images = $product->images->pluck('id_product_image')->toArray();
+
+            foreach ($original_images as $image) {
+                if (!in_array($image['id_product_image'], $old_id_product_images)) {
+                    return $this->requirementErrorMsg();
+                }
+            }
+
+            // delete images
+            $edited_id_product_images = collect($edited_images)->pluck('id_product_image')->toArray();
+
+            foreach ($original_images as $image) {
+                if (!in_array($image['id_product_image'], $edited_id_product_images)) {
+                    $this->deleteImage($image['name'], 'products');
+                    ProductImage::destroy($image['id_product_image']);
+                }
+            }
+
+            // add images
+            $image_names = [];
+            if (!empty ($images)) {
+                foreach ($images as $image) {
+                    $image_names[] = $this->storeImage($image, 'products');
+                }
+            }
+            foreach ($image_names as $image_name) {
+                ProductImage::create([
+                    'id_product' => $product->id_product,
+                    'name' => $image_name,
+                ]);
+            }
+
+
+            $product->p_code = $p_code;
+            $product->bar_code = $bar_code;
+            $product->name_en = $name_en;
+            $product->name_ch = $name_ch;
             $product->price = $price;
             $product->description = $description;
-            $product->length = $length;
-            $product->width = $width;
-            $product->height = $height;
-            $product->id_scale = $id_scale;
             $product->id_unit = $id_unit;
-            $product->id_category = $id_category;
             $product->id_brand = $id_brand;
+            $product->id_category = $id_category;
+
+            $old_id_colors = $product->colors->pluck('id_color')->toArray();
+            foreach ($old_id_colors as $id_color) {
+                if (!in_array($id_color, $id_colors)) {
+                    Variant::where('id_product', $product->id_product)
+                        ->where('id_color', $id_color)
+                        ->delete();
+                }
+            }
+            foreach ($id_colors as $id_color) {
+                if (!in_array($id_color, $old_id_colors)) {
+                    Variant::create([
+                        'id_product' => $product->id_product,
+                        'id_color' => $id_color,
+                    ]);
+                }
+            }
+
             if ($product->isDirty()) {
                 $product->updated_by = $user->id_user;
             }
             $product->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->requirementErrorMsg();
         } catch (Throwable $th) {
+            DB::rollback();
             return $this->requirementErrorMsg();
         }
+        $product = Product::where('id_product', $product->id_product)
+            ->with(['images', 'colors', 'category', 'unit', 'brand', 'created_by', 'updated_by'])
+            ->first();
         return response(
             [
                 'message' => 'The product has been updated.',
@@ -159,7 +282,7 @@ class ProductController extends Controller
         $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
 
         $product = Product::where('id_product', $id_product)
-            ->with(['created_by', 'updated_by'])
+            ->with(['images', 'colors', 'category', 'unit', 'brand', 'created_by', 'updated_by'])
             ->first();
         if (!$product) {
             return abort(417, 'The product not found.');
@@ -178,9 +301,19 @@ class ProductController extends Controller
             return abort(417, 'The product not found.');
         }
         try {
+            DB::beginTransaction();
+            $images = $product->images;
+            foreach ($images as $image) {
+                $this->deleteImage($image->name, 'products');
+            }
             $product->delete();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->requirementErrorMsg();
         } catch (Throwable $th) {
-            return abort(422, 'Failed to delete product.');
+            DB::rollback();
+            return $this->requirementErrorMsg();
         }
         return response(
             [

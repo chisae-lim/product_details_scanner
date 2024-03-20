@@ -50,10 +50,10 @@
                             </div>
                             <div class="col-lg-3 col-md-6">
                                 <div class="form-group">
-                                    <label>Bar Code</label>
+                                    <label>Barcode</label>
                                     <input v-model="PRODUCT.bar_code" type="text" class="form-control"
                                         :class="{ 'is-invalid': PRODUCT_ERR.bar_code !== null }"
-                                        placeholder="Enter bar code">
+                                        placeholder="Enter barcode">
                                     <div class="invalid-feedback">
                                         {{ PRODUCT_ERR.bar_code }}
                                     </div>
@@ -142,17 +142,26 @@
                                     <div class="d-flex justify-content-between">
                                         <label>Images</label>
                                         <div class="my-auto">
+                                            <button :class="{ 'disabled': forbadeUser }" @click="resetImage()"
+                                                type="button" class="mx-1 btn btn-sm btn-secondary"><i
+                                                    class="fas fa-undo"></i></button>
                                             <input :disabled="forbadeUser" @change="onImageChanged($event)" type="file"
                                                 accept=".png, .jpg, .jpeg" id="file-input" style="display: none">
                                             <label for="file-input">
-                                                <a :class="{ 'disabled': forbadeUser }" class="btn btn-primary btn-sm"
-                                                    title="upload product image"><i class="fa fa-upload"></i></a>
+                                                <a :class="{ 'disabled': forbadeUser }"
+                                                    class="mx-1 btn btn-primary btn-sm" title="upload product image"><i
+                                                        class="fa fa-upload"></i></a>
                                             </label>
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="product-image" v-for="(image, i) in edited_images"
+                                            @click="removeProcessingImage(i)">
+                                            <i class="fas fa-times"></i>
+                                            <img :src="image.thumbnail_url" />
+                                        </div>
                                         <div class="product-image" v-for="(image, i) in PRODUCT.images"
-                                            @click="removeImage(i)">
+                                            @click="removeAddingImage(i)">
                                             <i class="fas fa-times"></i>
                                             <img :src="image" />
                                         </div>
@@ -191,7 +200,8 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button :disabled="forbadeUser" type="submit" class="btn btn-primary">Save</button>
+                        <button :disabled="forbadeUser || PRODUCT.id_category === null" type="submit"
+                            class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -264,8 +274,30 @@ const units = computed(() => store.state.units);
 const products = ref([]);
 const product_columns = [
     {
-        accessorKey: 'name',
-        header: 'Name',
+        accessorKey: 'p_code',
+        header: 'Product Code',
+    },
+    {
+        accessorKey: 'bar_code',
+        header: 'Barcode',
+    },
+    {
+        accessorKey: 'name_en',
+        header: 'Name EN',
+    },
+    {
+        accessorKey: 'name_ch',
+        header: 'Name CH',
+    },
+    {
+        // accessorKey: 'category.name',
+        accessorFn: ({ category }) => category === null ? '---' : category.name,
+        header: 'Category',
+    },
+    {
+        // accessorKey: 'brand.name',
+        accessorFn: ({ brand }) => brand === null ? '---' : brand.name,
+        header: 'Brand',
     },
     {
         accessorKey: 'action',
@@ -277,7 +309,7 @@ const product_columns = [
         cell: ({
             row
         }) => h(RowBtn, {
-            product: products.value[row.index],
+            product: row.original,
             funcs: {
                 viewProduct,
                 deleteProduct
@@ -327,6 +359,9 @@ onMounted(async () => {
         PRODUCT.id_colors = [];
         PRODUCT.images = [];
         selected_colors.value = [];
+
+        original_images.value = [];
+        edited_images.value = [];
     });
 
     $('#cropper-modal').on('shown.bs.modal', function () {
@@ -382,6 +417,8 @@ async function saveProduct() {
             res = await createProduct(PRODUCT);
             onRowCreated(res.data.product);
         } else {
+            PRODUCT.original_images = original_images.value;
+            PRODUCT.edited_images = edited_images.value;
             res = await updateProduct(PRODUCT);
             onRowUpdated(res.data.product);
         }
@@ -421,8 +458,20 @@ async function viewProduct(id_product) {
             '/api/manage/products/read/' + id_product,
         );
         const product = res.data;
-        const keys = ['id_product', 'name_en'];
+        const keys = ['id_product', 'p_code', 'bar_code', 'name_en', 'name_ch', 'price', 'description'];
         keys.forEach(key => PRODUCT[key] = product[key]);
+
+        const { images, colors, category, brand, unit } = product;
+
+        PRODUCT.id_brand = brand?.id_brand ?? null;
+        PRODUCT.id_category = category?.id_category ?? null;
+        PRODUCT.id_unit = unit.id_unit;
+
+        PRODUCT.id_colors = colors.map(x => x.id_color);
+        selected_colors.value = [...colors];
+
+        original_images.value = [...images];
+        edited_images.value = [...images];
         $('#product-modal').modal('show');
         CloseModal();
     } catch (error) {
@@ -511,8 +560,8 @@ const removeColor = (id_color) => {
 
 }
 
-
-const currentImage = ref(null);
+const original_images = ref([]);
+const edited_images = ref([]);
 const imageRef = ref(null);
 const cropperRef = ref(null);
 
@@ -542,7 +591,14 @@ const onImageCropped = () => {
     });
     PRODUCT.images.push(cropped.toDataURL());
 }
-const removeImage = (index) => {
+const removeAddingImage = (index) => {
     PRODUCT.images.splice(index, 1);
+}
+const removeProcessingImage = (index) => {
+    edited_images.value.splice(index, 1);
+}
+const resetImage = () => {
+    PRODUCT.images = [];
+    edited_images.value = [...original_images.value];
 }
 </script>
