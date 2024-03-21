@@ -77,6 +77,7 @@ const onScanBtnClicked = async () => {
 
 const onDecode = async (result) => {
     searchText.value = result;
+    searchProduct();
 }
 
 // 8846015180038
@@ -91,7 +92,6 @@ async function searchProduct() {
             }
             return MessageModal('info', 'Not Found', 'Product not found!.');
         } catch (error) {
-            console.log(error)
             scanning.value = false;
             MessageModal('error', 'Oops...', 'Something went wrong!.');
         }
