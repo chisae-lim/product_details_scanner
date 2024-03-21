@@ -324,8 +324,22 @@ class ProductController extends Controller
         );
     }
 
-    function getProductByCode(Request $request, $code)
+    function searchProductByCode(Request $request, $code)
     {
         return Product::where('p_code', $code)->orWhere('bar_code', $code)->first();
+    }
+
+    function getProductByBarCode(Request $request, $bar_code)
+    {
+        return Product::where('bar_code', $bar_code)
+            ->with(['images', 'colors', 'category', 'unit', 'brand'])
+            ->first();
+    }
+
+    function getProductByProductCode(Request $request, $p_code)
+    {
+        return Product::where('p_code', $p_code)
+            ->with(['images', 'colors', 'category', 'unit', 'brand'])
+            ->first();
     }
 }

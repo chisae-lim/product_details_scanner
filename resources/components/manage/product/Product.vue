@@ -200,7 +200,7 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button :disabled="forbadeUser || PRODUCT.id_category === null" type="submit"
+                        <button :disabled="forbadeUser || PRODUCT.id_unit === null" type="submit"
                             class="btn btn-primary">Save</button>
                     </div>
                 </form>

@@ -84,7 +84,8 @@ class Controller extends BaseController
             $photoData = str_replace(' ', '+', $photoData);
             $photoData = Image::make(base64_decode($photoData));
             $photoData->save(public_path() . "/assets/images/$folderName/" . $photoName);
-            $photoData->resize(150, 150)->save(public_path() . "/assets/images/$folderName/thumbnails/" . $photoName);
+            // $photoData->resize(150, 150)->save(public_path() . "/assets/images/$folderName/thumbnails/" . $photoName);
+            $photoData->resize(100, 100)->save(public_path() . "/assets/images/$folderName/thumbnails/" . $photoName);
             return $photoName;
         } catch (Throwable $th) {
             return $th;

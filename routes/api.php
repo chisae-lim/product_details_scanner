@@ -26,7 +26,9 @@ use App\Http\Controllers\API\ComponentController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::get('/product/search/code/{code}', [ProductController::class, 'getProductByCode']);
+Route::get('/product/search/code/{code}', [ProductController::class, 'searchProductByCode']);
+Route::get('/product/p_code/{p_code}', [ProductController::class, 'getProductByProductCode']);
+Route::get('/product/bar_code/{bar_code}', [ProductController::class, 'getProductByBarCode']);
 
 Route::prefix('/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);

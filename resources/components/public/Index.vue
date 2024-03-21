@@ -1,23 +1,16 @@
 <template>
-    <div class="background-wrapper">
-        <div class="background-image" :style="{ backgroundImage: `url(${background})` }"></div>
-    </div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container-fluid">
-            <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">Navbar</router-link>
-            <router-link :to="{ name: 'login' }" class="navbar-text ml-auto">
-                <i class="fas fa-sign-in-alt"></i>
-            </router-link>
-        </div>
-    </nav>
-    <section class="content mt-5">
+    <Navbar />
+    <section class="content">
         <div class="container-fluid">
             <div class="row justify-content-center">
-                <div class="mt-5 col-lg-6 col-md-8 col-sm-10">
+                <div class="col-lg-6 col-md-8 col-sm-10">
                     <div class="card">
                         <div class="d-flex justify-content-center mt-3">
-                            <img :src="logoImage" :hidden="scanning" class="brand-image border img-circle"
-                                style="width: 200px;" alt="logo image">
+                            <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">
+                                <img :src="logoImage" :hidden="scanning" class="brand-image border img-circle"
+                                    style="width: 200px;" alt="logo image">
+                            </router-link>
+
                         </div>
                         <div v-if="scanning" class="mx-auto p-3" style="max-width: 400px;">
                             <StreamBarcodeReader @decode="onDecode">
@@ -47,59 +40,15 @@
             </div>
         </div>
     </section>
-    <div class="modal fade" id="scanner-modal" data-backdrop="static" data-keyboard="false" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Scanner</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-            </div>
-        </div>
-    </div>
 </template>
-<style>
-/* body {
-    background-image: url('/assets/images/background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-} */
 
-.background-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-.background-image {
-    /* background-image: url('/assets/images/background.jpg'); */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* opacity: 0.75; */
-    width: 100%;
-    height: 100%;
-}
-</style>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import Navbar from './Navbar.vue';
 
 import { StreamBarcodeReader } from "vue-barcode-reader";
-import background from "../../../public/assets/images/background.jpg";
 import logoImage from "../../../public/assets/images/logo.jpg";
 import { onMounted, ref } from 'vue';
-
-const router = useRouter();
 
 const searchBox = ref(null);
 const searchText = ref(null);
@@ -126,28 +75,28 @@ const onScanBtnClicked = async () => {
     // $('#scanner-modal').modal('show');
 }
 
-const onLoaded = (result) => { console.log(result) }
-
 const onDecode = async (result) => {
     searchText.value = result;
 }
+
+// 8846015180038
 async function searchProduct() {
     if (searchText.value !== null) {
         searchBox.value.select();
         try {
-            const res = await getProductByCode(searchText.value);
+            const res = await searchProductByCode(searchText.value);
             const product = res.data;
             if (product !== '') {
-                return window.open('/login', '_blank');
+                return window.open('/product/' + product.bar_code, '_blank');
             }
-            return MessageModal('error', 'Oops...', 'Something went wrong!.');
+            return MessageModal('info', 'Not Found', 'Product not found!.');
         } catch (error) {
             scanning.value = false;
             MessageModal('error', 'Oops...', 'Something went wrong!.');
         }
     }
 }
-async function getProductByCode(code) {
+async function searchProductByCode(code) {
     try {
         const res = await axios.get('/api/product/search/code/' + code);
         return res;
@@ -156,3 +105,9 @@ async function getProductByCode(code) {
     }
 }
 </script>
+
+<style scoped>
+section {
+    margin-top: 75px;
+}
+</style>

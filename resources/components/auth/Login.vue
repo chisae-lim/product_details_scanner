@@ -4,9 +4,11 @@
             <div class="row justify-content-center">
                 <div class="col-lg-4 col-md-6 col-sm-8">
                     <div class="card card-secondary mt-5">
-                        <div class="d-flex justify-content-center">
-                            <img :src="logoImage" class="brand-image img-circle w-25" alt="logo image">
-                        </div>
+                        <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">
+                            <div class="d-flex justify-content-center">
+                                <img :src="logoImage" class="brand-image img-circle w-25" alt="logo image">
+                            </div>
+                        </router-link>
                         <div class="card-header d-flex justify-content-center">
                             <h3 class="card-title">Login to your account</h3>
                         </div>
@@ -25,8 +27,8 @@
                                 <div class="form-group">
                                     <label>Password</label>
                                     <input v-model="loginObj.password" type="password" class="form-control"
-                                        :class="{ 'is-invalid': loginErrObj.password !== null }"
-                                        placeholder="Password" autocomplete>
+                                        :class="{ 'is-invalid': loginErrObj.password !== null }" placeholder="Password"
+                                        autocomplete>
                                     <div class="invalid-feedback">
                                         {{ loginErrObj.password }}
                                     </div>

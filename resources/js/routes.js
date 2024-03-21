@@ -2,7 +2,8 @@
 import Login from '../components/auth/Login.vue';
 import Profile from '../components/profile/Profile.vue';
 import Dashboard from '../components/dashboard/Dashboard.vue';
-import Index from '../components/index/Index.vue';
+import Index from '../components/public/Index.vue';
+import ProductDetail from '../components/public/ProductDetail.vue';
 import Users from '../components/manage/users/Users.vue';
 import Brand from '../components/manage/brand/Brand.vue';
 import Category from '../components/manage/category/Category.vue';
@@ -34,6 +35,11 @@ export default [
         path: '/',
         name: 'index',
         component: Index,
+    },
+    {
+        path: '/product/:bar_code',
+        name: 'product.details',
+        component: ProductDetail,
     },
     {
         path: '/login',
