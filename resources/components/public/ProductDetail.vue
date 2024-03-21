@@ -3,7 +3,12 @@
     <section class="content">
         <div class="container">
             <div class="card">
-                <div v-if="product !== null" class="container-fliud">
+                <div v-if="product === null" class="card-body">
+                    <h5 class="card-title">Not Found!.</h5>
+                    <p class="card-text">Sorry, The product with barcode({{ bar_code }}) was not found.</p>
+                    <router-link :to="{ name: 'dashboard' }" class="btn btn-primary">Go to home page</router-link>
+                </div>
+                <div v-else class="container-fliud">
                     <div class="wrapper row">
                         <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-center">
@@ -67,16 +72,17 @@
 
 <script setup>
 
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue';
 import Navbar from './Navbar.vue';
 import logoImage from "../../../public/assets/images/logo.jpg";
 
-
+const bar_code = ref(null);
 const route = useRoute();
 const product = ref(null)
 const main_image = ref(null);
 onMounted(async () => {
+    bar_code.value = route.params.bar_code;
     const res = await getProductByBarcode(route.params.bar_code);
     product.value = res.data;
     console.log(product.value)

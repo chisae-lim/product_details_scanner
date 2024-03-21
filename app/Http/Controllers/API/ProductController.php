@@ -214,8 +214,10 @@ class ProductController extends Controller
             // add images
             $image_names = [];
             if (!empty ($images)) {
+                $index = 0;
                 foreach ($images as $image) {
-                    $image_names[] = $this->storeImage($image, 'products');
+                    $image_names[] = $this->storeImage($image, 'products', $index);
+                    $index++;
                 }
             }
             foreach ($image_names as $image_name) {
