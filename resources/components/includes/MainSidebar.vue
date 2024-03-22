@@ -87,6 +87,14 @@
                             </p>
                         </router-link>
                     </li>
+                    <li v-if="validUser('manage.backgrounds')" class="nav-item">
+                        <router-link :to="{ name: 'manage.backgrounds' }" active-class="active" class="nav-link">
+                            <i class="nav-icon fas fa-image"></i>
+                            <p>
+                                Background
+                            </p>
+                        </router-link>
+                    </li>
                 </ul>
             </nav>
         </div>

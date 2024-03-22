@@ -11,9 +11,12 @@ import Scale from '../components/manage/scale/Scale.vue';
 import Unit from '../components/manage/unit/Unit.vue';
 import Color from '../components/manage/color/Color.vue';
 import Product from '../components/manage/product/Product.vue';
+import Background from '../components/manage/background/Background.vue';
+
 
 import NotFound from '../components/NotFound.vue';
 
+import PublicNavbar from '../components/public/Navbar.vue';
 
 import Navbar from '../components/includes/Navbar.vue';
 import MainSidebar from '../components/includes/MainSidebar.vue';
@@ -34,17 +37,26 @@ export default [
     {
         path: '/',
         name: 'index',
-        component: Index,
+        components: {
+            default: Index,
+            navbar: PublicNavbar,
+        },
     },
     {
         path: '/product/:bar_code',
         name: 'product.details',
-        component: ProductDetail,
+        components: {
+            default: ProductDetail,
+            navbar: PublicNavbar,
+        },
     },
     {
         path: '/login',
         name: 'login',
-        component: Login,
+        components: {
+            default: Login,
+            navbar: PublicNavbar,
+        },
     },
     {
         path: '/profile',
@@ -156,6 +168,20 @@ export default [
         meta: {
             guard: {
                 id_perms: [1, 3],
+                readOnly: true,
+            }
+        }
+    },
+    {
+        path: '/manage/backgrounds',
+        name: 'manage.backgrounds',
+        components: {
+            default: Background,
+            ...operationComponents
+        },
+        meta: {
+            guard: {
+                id_perms: [1],
                 readOnly: true,
             }
         }

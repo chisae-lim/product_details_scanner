@@ -18,7 +18,7 @@ class UnitController extends Controller
         $user = $request->user;
         $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
 
-        return Unit::all();
+        return Unit::orderBy('name', 'asc')->get();
     }
     function createUnit(Request $request)
     {

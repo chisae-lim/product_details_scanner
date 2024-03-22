@@ -18,7 +18,7 @@ class ScaleController extends Controller
         $user = $request->user;
         $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
 
-        return Scale::all();
+        return Scale::orderBy('name', 'asc')->get();
     }
     function createScale(Request $request)
     {

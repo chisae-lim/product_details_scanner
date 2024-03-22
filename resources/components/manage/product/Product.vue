@@ -35,7 +35,7 @@
                             <span>×</span>
                         </button>
                     </div>
-                    <div class="modal-body scrollable">
+                    <div class="modal-body scrollable-x">
                         <div class="row">
                             <div class="col-lg-3 col-md-6">
                                 <div class="form-group">

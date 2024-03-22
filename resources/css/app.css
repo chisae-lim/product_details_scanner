@@ -14,9 +14,38 @@
     height: 189px;
 }
 
-.scrollable {
+.scrollable-x {
     max-height: calc(100vh - 200px);
     overflow-y: auto;
+}
+
+.scrollable-y {
+    width: 100%;
+    overflow-x: scroll;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.scrollable-y::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+    /* width of the entire scrollbar */
+}
+
+.scrollable-y::-webkit-scrollbar-track {
+    background: rgb(173, 173, 173);
+    border-radius: 20px;
+
+    /* color of the tracking area */
+}
+
+.scrollable-y::-webkit-scrollbar-thumb {
+    background-color: rgb(83, 83, 223);
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+    /* border: 3px solid orange; */
+    /* creates padding around scroll thumb */
 }
 
 .color-square {

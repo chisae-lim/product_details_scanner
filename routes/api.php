@@ -11,6 +11,7 @@ use App\Http\Controllers\API\ScaleController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ComponentController;
+use App\Http\Controllers\API\BackgroundController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ use App\Http\Controllers\API\ComponentController;
 Route::get('/product/search/code/{code}', [ProductController::class, 'searchProductByCode']);
 Route::get('/product/p_code/{p_code}', [ProductController::class, 'getProductByProductCode']);
 Route::get('/product/bar_code/{bar_code}', [ProductController::class, 'getProductByBarCode']);
+Route::get('/background/active', [BackgroundController::class, 'getActiveBackground']);
 
 Route::prefix('/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -94,6 +96,12 @@ Route::middleware(['authorize'])->group(function () {
             Route::get('/read/{id_product}', [ProductController::class, 'readProduct']);
             Route::put('/update', [ProductController::class, 'updateProduct']);
             Route::delete('/delete/{id_product}', [ProductController::class, 'deleteProduct']);
+        });
+        Route::prefix('/backgrounds')->group(function () {
+            Route::get('/', [BackgroundController::class, 'getBackgrounds']);
+            Route::post('/create', [BackgroundController::class, 'createBackground']);
+            Route::delete('/delete/{id_background}', [BackgroundController::class, 'deleteBackground']);
+            Route::put('/active/{id_background}', [BackgroundController::class, 'activeBackground']);
         });
     });
     Route::prefix('/components')->group(function () {

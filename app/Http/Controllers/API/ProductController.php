@@ -24,6 +24,9 @@ class ProductController extends Controller
         $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
 
         return Product::with(['images', 'colors', 'category', 'unit', 'brand', 'created_by', 'updated_by'])
+            ->orderBy('p_code', 'asc')
+            ->orderBy('name_en', 'asc')
+            ->orderBy('bar_code', 'asc')
             ->get()
             ->makeVisible(['created_by', 'updated_by']);
     }
@@ -46,6 +49,7 @@ class ProductController extends Controller
             'name_en' => 'required',
             'name_ch' => 'required',
             'price' => 'required|numeric',
+            'images.*' => 'base64image|base64mimes:png,jpg,jpeg|base64dimensions:min_width=454,min_height=454,max_width=454,max_height=454',
         ], $customErrorMessage);
         ###
         $p_code = $request->p_code;
@@ -150,6 +154,7 @@ class ProductController extends Controller
             'name_en' => 'required',
             'name_ch' => 'required',
             'price' => 'required|numeric',
+            'images.*' => 'base64image|base64mimes:png,jpg,jpeg|base64dimensions:min_width=454,min_height=454,max_width=454,max_height=454',
         ], $customErrorMessage);
 
         ###
@@ -326,19 +331,19 @@ class ProductController extends Controller
         );
     }
 
-    function searchProductByCode(Request $request, $code)
+    function searchProductByCode($code)
     {
         return Product::where('p_code', $code)->orWhere('bar_code', $code)->first();
     }
 
-    function getProductByBarCode(Request $request, $bar_code)
+    function getProductByBarCode($bar_code)
     {
         return Product::where('bar_code', $bar_code)
             ->with(['images', 'colors', 'category', 'unit', 'brand'])
             ->first();
     }
 
-    function getProductByProductCode(Request $request, $p_code)
+    function getProductByProductCode($p_code)
     {
         return Product::where('p_code', $p_code)
             ->with(['images', 'colors', 'category', 'unit', 'brand'])

@@ -96,12 +96,12 @@ class Controller extends BaseController
     {
         try {
             $store_path_thumbnails = public_path() . "/assets/images/$folderName/thumbnails/";
-            $store_path5x5 = public_path() . "/assets/images/$folderName/";
+            $store_path = public_path() . "/assets/images/$folderName/";
             if (File::exists($store_path_thumbnails . $photoName)) {
                 File::delete($store_path_thumbnails . $photoName);
             }
-            if (File::exists($store_path5x5 . $photoName)) {
-                File::delete($store_path5x5 . $photoName);
+            if (File::exists($store_path . $photoName)) {
+                File::delete($store_path . $photoName);
             }
             return true;
         } catch (Throwable $th) {

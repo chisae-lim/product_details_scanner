@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-lg-4 col-md-6 col-sm-8">
-                    <div class="card card-secondary mt-5">
+                    <div class="card card-secondary">
                         <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">
                             <div class="d-flex justify-content-center">
                                 <img :src="logoImage" class="brand-image img-circle w-25" alt="logo image">

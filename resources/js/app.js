@@ -104,7 +104,7 @@ router.beforeEach(async (to, from) => {
     }
 
     if (loggedIn) {
-        if (['index','product.details', 'login'].includes(to.name)) {
+        if (['login'].includes(to.name)) {
             return { name: 'dashboard' };
         }
         const user = loggedIn.data.user;

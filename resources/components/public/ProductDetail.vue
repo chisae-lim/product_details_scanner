@@ -1,33 +1,31 @@
 <template>
-    <Navbar />
     <section class="content">
         <div class="container">
             <div class="card">
                 <div v-if="product === null" class="card-body">
                     <h5 class="card-title">Not Found!.</h5>
-                    <p class="card-text">Sorry, The product with barcode({{ bar_code }}) was not found.</p>
+                    <p class="card-text">Sorry, The product with barcode({{ bar_code }}) not found.</p>
                     <router-link :to="{ name: 'dashboard' }" class="btn btn-primary">Go to home page</router-link>
                 </div>
                 <div v-else class="container-fliud">
                     <div class="wrapper row">
-                        <div class="col-md-6 mb-3">
+                        <div class="mb-3 col-md-12 col-lg-6 col-xl-12">
                             <div class="d-flex justify-content-center">
                                 <img class="main-image" :src="main_image">
                             </div>
-                            <div class="horizontal-scroll">
-                                <div class="d-flex">
-                                    <img v-for="(image, i) in product.images" class="thumbnail m-1"
-                                        :class="{ 'clicked': image.image_url === main_image }"
-                                        @click="onThumbNailClicked(i)" :src="image.thumbnail_url">
-                                </div>
+                            <div class="horizontal-scroll d-flex">
+                                <img v-for="(image, i) in product.images" class="thumbnail m-1"
+                                    :class="{ 'clicked': image.image_url === main_image }"
+                                    @click="onThumbNailClicked(i)" :src="image.thumbnail_url">
+
                             </div>
                         </div>
-                        <div class="details col-md-6">
+                        <div class="details col-md-12 col-lg-6 col-xl-12">
                             <h3 class="product-title">{{ product.name_en }}</h3>
                             <h3 class="product-title">{{ product.name_ch }}</h3>
                             <h5 class="product-code">code: {{ product.p_code }}</h5>
                             <h5 class="barcode">barcode: {{ product.bar_code }}</h5>
-                            <div class="rating">
+                            <!-- <div class="rating">
                                 <div class="stars">
                                     <span class="fa fa-star checked"></span>
                                     <span class="fa fa-star checked"></span>
@@ -36,9 +34,9 @@
                                     <span class="fa fa-star"></span>
                                 </div>
                                 <span class="review-no">41 reviews</span>
-                            </div>
+                            </div> -->
                             <p class="product-description">{{ product.description }}</p>
-                            <h4 class="price">current price: <span>{{ `${product.price}$ / ${product.unit.name}`
+                            <h4 class="price">price: <span>{{ `${product.price}$ / ${product.unit.name}`
                                     }}</span>
                             </h4>
                             <!-- <p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87
@@ -107,10 +105,6 @@ async function onThumbNailClicked(index) {
 body {
     font-family: 'open sans';
     overflow-x: hidden;
-}
-
-section {
-    margin-top: 75px;
 }
 
 .main-image {
@@ -290,12 +284,15 @@ section {
     margin-top: 5px;
     width: 100%;
     overflow-x: scroll;
+    overflow:auto;
     white-space: nowrap;
+    border-radius: 5px;
+    border: 1px inset gray;
 }
 
 .horizontal-scroll::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 7px;
+    height: 7px;
     /* width of the entire scrollbar */
 }
 

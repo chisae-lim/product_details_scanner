@@ -1,6 +1,8 @@
 <template>
     <div class="background-wrapper">
-        <div class="background-image" :style="{ backgroundImage: `url(${background})` }"></div>
+        <div class="background-image"
+            :style="{ backgroundImage: `url(${(active_background === undefined ? default_background : active_background)})` }">
+        </div>
     </div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
@@ -39,7 +41,27 @@
     height: 100%;
 }
 </style>
-
+<style>
+section {
+    margin-top: 75px;
+}
+</style>
 <script setup>
-import background from "../../../public/assets/images/background.jpg";
+import { onMounted, ref } from "vue";
+import default_background from "../../../public/assets/images/background.jpg";
+
+const active_background = ref(null);
+onMounted(async () => {
+    const res = await getActiveBackground();
+    active_background.value = res.data.image_url;
+});
+
+async function getActiveBackground() {
+    try {
+        const res = await axios.get('/api/background/active');
+        return res;
+    } catch (error) {
+        throw error;
+    }
+}
 </script>

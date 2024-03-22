@@ -1,5 +1,4 @@
 <template>
-    <Navbar />
     <section class="content">
         <div class="container-fluid">
             <div class="row justify-content-center">
@@ -120,9 +119,3 @@ async function searchProductByCode(code) {
     }
 }
 </script>
-
-<style scoped>
-section {
-    margin-top: 75px;
-}
-</style>

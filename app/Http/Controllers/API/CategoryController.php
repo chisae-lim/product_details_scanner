@@ -18,7 +18,7 @@ class CategoryController extends Controller
         $user = $request->user;
         $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
 
-        return Category::all();
+        return Category::orderBy('name', 'asc')->get();
     }
     function createCategory(Request $request)
     {

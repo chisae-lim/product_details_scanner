@@ -18,7 +18,7 @@ class BrandController extends Controller
         $user = $request->user;
         $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
 
-        return Brand::all();
+        return Brand::orderBy('name', 'asc')->get();
     }
     function createBrand(Request $request)
     {
