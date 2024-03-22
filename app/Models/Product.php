@@ -44,7 +44,9 @@ class Product extends Model
 {
 	protected $table = 'tbl_product';
 	protected $primaryKey = 'id_product';
-
+	protected $appends = [
+		'link',
+	];
 	protected $casts = [
 		'price' => 'float',
 		// 'length' => 'int',
@@ -85,6 +87,14 @@ class Product extends Model
 		'created_by',
 		'updated_by'
 	];
+	protected function getHostUrl()
+	{
+		return request()->getScheme() . '://' . request()->getHost() . ':' . request()->getPort();
+	}
+	protected function getLinkAttribute()
+	{
+		return  $this-> getHostUrl() . '/product/' . $this->bar_code;
+	}
 
 	public function category(): BelongsTo
 	{

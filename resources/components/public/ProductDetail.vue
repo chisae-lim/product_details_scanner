@@ -14,8 +14,8 @@
                             <div class="d-flex justify-content-center">
                                 <img class="main-image" :src="main_image">
                             </div>
-                            <div class="vertical-scroll">
-                                <div class="d-flex justify-content-center">
+                            <div class="horizontal-scroll">
+                                <div class="d-flex">
                                     <img v-for="(image, i) in product.images" class="thumbnail m-1"
                                         :class="{ 'clicked': image.image_url === main_image }"
                                         @click="onThumbNailClicked(i)" :src="image.thumbnail_url">
@@ -286,27 +286,27 @@ section {
     }
 }
 
-.vertical-scroll {
+.horizontal-scroll {
     margin-top: 5px;
     width: 100%;
     overflow-x: scroll;
     white-space: nowrap;
 }
 
-.vertical-scroll::-webkit-scrollbar {
+.horizontal-scroll::-webkit-scrollbar {
     width: 10px;
     height: 10px;
     /* width of the entire scrollbar */
 }
 
-.vertical-scroll::-webkit-scrollbar-track {
+.horizontal-scroll::-webkit-scrollbar-track {
     background: rgb(173, 173, 173);
     border-radius: 20px;
 
     /* color of the tracking area */
 }
 
-.vertical-scroll::-webkit-scrollbar-thumb {
+.horizontal-scroll::-webkit-scrollbar-thumb {
     background-color: rgb(83, 83, 223);
     /* color of the scroll thumb */
     border-radius: 20px;

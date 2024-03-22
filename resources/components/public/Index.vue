@@ -53,12 +53,10 @@ import { onMounted, ref } from 'vue';
 const searchBox = ref(null);
 const searchText = ref(null);
 const scanning = ref(false);
+const decoding = ref(false);
 
 onMounted(() => {
     searchBox.value.focus();
-    $('#scanner-modal').on('hide.bs.modal', function () {
-        scanning.value = false;
-    });
 })
 
 const onScanBtnClicked = async () => {
@@ -71,8 +69,6 @@ const onScanBtnClicked = async () => {
         .catch(error => {
             MessageModal('error', 'Oops...', 'Error accessing camera: Permission denied!.');
         });
-
-    // $('#scanner-modal').modal('show');
 }
 
 const onDecode = async (result) => {
@@ -82,18 +78,36 @@ const onDecode = async (result) => {
 
 // 8846015180038
 async function searchProduct() {
-    if (searchText.value !== null) {
+    if (searchText.value !== null && decoding.value === false) {
+        decoding.value = true;
         searchBox.value.select();
+        let product = null;
         try {
             const res = await searchProductByCode(searchText.value);
-            const product = res.data;
+            product = res.data;
             if (product !== '') {
-                return window.open('/product/' + product.bar_code, '_blank');
+                return window.open(product.link, '_blank').focus();
             }
             return MessageModal('info', 'Not Found', 'Product not found!.');
         } catch (error) {
+            if (product !== null) {
+                return await $swal.fire({
+                    title: 'We are going to send you to a new browser tab for product detail.',
+                    html: '<pre>' + "Please make a confirmation." + '</pre>',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    confirmButtonText: 'Yes, Open it.'
+                }).then(async (sw) => {
+                    if (sw.isConfirmed) {
+                        return window.open(product.link, '_blank').focus();
+                    }
+                });
+            }
             scanning.value = false;
-            MessageModal('error', 'Oops...', 'Something went wrong!.');
+            return MessageModal('error', 'Oops...', 'Something went wrong!.');
+        } finally {
+            decoding.value = false;
         }
     }
 }
