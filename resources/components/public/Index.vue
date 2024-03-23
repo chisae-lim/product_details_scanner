@@ -3,38 +3,33 @@
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-lg-6 col-md-8 col-sm-10">
-                    <div class="card">
-                        <div class="d-flex justify-content-center mt-3">
-                            <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">
-                                <img :src="logoImage" :hidden="scanning" class="brand-image border img-circle"
-                                    style="width: 200px;" alt="logo image">
-                            </router-link>
-
-                        </div>
-                        <div v-if="scanning" class="mx-auto p-3" style="max-width: 400px;">
-                            <StreamBarcodeReader @decode="onDecode">
-                            </StreamBarcodeReader>
-                        </div>
-                        <form @submit.prevent="searchProduct()">
-                            <div class="card-body">
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <button @click="onScanBtnClicked()" class="btn     btn-outline-primary"
-                                            type="button">
-                                            <i class="bi bi-upc-scan"></i>
-                                        </button>
-                                    </span>
-                                    <input ref="searchBox" v-model="searchText" class="form-control py-2" type="search"
-                                        placeholder="Enter code">
-                                    <span class="input-group-append">
-                                        <button class="btn btn-outline-primary" type="submit">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="d-flex justify-content-center m-3">
+                        <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">
+                            <img :src="logoImage" :hidden="scanning" class="brand-image border border-secondary img-circle"
+                                style="width: 200px;" alt="logo image">
+                        </router-link>
                     </div>
+                    <div v-if="scanning" class="mx-auto p-3" style="max-width: 400px;">
+                        <StreamBarcodeReader @decode="onDecode">
+                        </StreamBarcodeReader>
+                    </div>
+                    <form @submit.prevent="searchProduct()">
+                        <div class="input-group">
+                            <span class="input-group-prepend">
+                                <button @click="onScanBtnClicked()" class="bg-light btn btn-outline-primary"
+                                    type="button">
+                                    <i class="bi bi-upc-scan"></i>
+                                </button>
+                            </span>
+                            <input ref="searchBox" v-model="searchText" class="form-control border" type="search"
+                                placeholder="Enter code">
+                            <span class="input-group-append">
+                                <button class="bg-light btn btn-outline-primary" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
