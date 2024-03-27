@@ -22,11 +22,7 @@ return new class extends Migration {
             ],
             [
                 'id_user' => 2,
-                'id_permission' => 2,
-            ],
-            [
-                'id_user' => 2,
-                'id_permission' => 3,
+                'id_permission' => 1,
             ],
         ];
         foreach ($user_permissions as $user_permission) {

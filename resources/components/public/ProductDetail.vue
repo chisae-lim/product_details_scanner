@@ -9,7 +9,7 @@
                 </div>
                 <div v-else class="container-fliud">
                     <div class="wrapper row">
-                        <div class="mb-3 col-md-12 col-lg-6 col-xl-12">
+                        <div class="mb-3 col-md-12 col-lg-6">
                             <div class="d-flex justify-content-center">
                                 <img class="main-image" :src="main_image">
                             </div>
@@ -20,7 +20,7 @@
 
                             </div>
                         </div>
-                        <div class="details col-md-12 col-lg-6 col-xl-12">
+                        <div class="details col-md-12 col-lg-6">
                             <h3 class="product-title">{{ product.name_en }}</h3>
                             <h3 class="product-title">{{ product.name_ch }}</h3>
                             <h5 class="product-code">code: {{ product.p_code }}</h5>
@@ -35,7 +35,7 @@
                                 </div>
                                 <span class="review-no">41 reviews</span>
                             </div> -->
-                            <p class="product-description">{{ product.description }}</p>
+                            <!-- <p class="product-description">{{ product.description }}</p> -->
                             <h4 class="price">price: <span>{{ `${product.price}$ / ${product.unit.name}`
                                     }}</span>
                             </h4>
@@ -48,10 +48,10 @@
                                 <span class="size" data-toggle="tooltip" title="xtra large">xl</span>
                             </h5> -->
 
-                            <h5 class="brand">brand: {{ product.brand.name }}</h5>
-                            <h5 class="category">category: {{ product.category.name }}</h5>
+                            <h5 class="brand">brand: {{ product.brand?.name }}</h5>
+                            <h5 class="category">category: {{ product.category?.name }}</h5>
                             <h5 class="colors">colors:
-                                <span v-for="color in product.colors" class="color"
+                                <span v-for="color in product.colors" :key="color.id_color" class="color"
                                     :style="{ background: color.code }"></span>
                             </h5>
                             <!-- <div class="action">
@@ -60,6 +60,10 @@
                                         class="fa fa-heart"></span></button>
                             </div> -->
                         </div>
+                    </div>
+                    <div class="details">
+                        <h5><label>Descriptions</label></h5>
+                        <h5 class="product-description">{{ product.description }}</h5>
                     </div>
                 </div>
             </div>
@@ -83,7 +87,6 @@ onMounted(async () => {
     bar_code.value = route.params.bar_code;
     const res = await getProductByBarcode(route.params.bar_code);
     product.value = res.data;
-    console.log(product.value)
     main_image.value = product.value.images[0].image_url;
 });
 
@@ -131,6 +134,7 @@ body {
 
 .card {
     margin-top: 50px;
+    min-height: calc(100vh - 200px);
     background: #eee;
     padding: 3em;
     line-height: 1.5em;
@@ -165,13 +169,13 @@ body {
 }
 
 .product-title,
-.price,
-.sizes,
 .product-code,
 .barcode,
 .brand,
 .category,
-.colors {
+.price,
+.colors,
+.sizes {
     text-transform: UPPERCASE;
     font-weight: bold;
 }
@@ -182,16 +186,17 @@ body {
 }
 
 .product-title,
-.rating,
-.product-description,
-.price,
-.vote,
-.sizes,
 .product-code,
 .barcode,
 .brand,
-.category {
-    margin-bottom: 15px;
+.category,
+.product-description,
+.price,
+.colors,
+.sizes,
+.vote,
+.rating {
+    margin-bottom: 30px;
 }
 
 .product-title {
@@ -209,14 +214,15 @@ body {
 .color {
     display: inline-block;
     vertical-align: middle;
-    margin-right: 10px;
+    margin: 7px;
     height: 2em;
     width: 2em;
     border-radius: 2px;
+    border: 1px rgb(200, 200, 200) solid;
 }
 
 .color:first-of-type {
-    margin-left: 20px;
+    margin-left: 33px;
 }
 
 .add-to-cart,
@@ -284,7 +290,7 @@ body {
     margin-top: 5px;
     width: 100%;
     overflow-x: scroll;
-    overflow:auto;
+    overflow: auto;
     white-space: nowrap;
     border-radius: 5px;
     border: 1px inset gray;

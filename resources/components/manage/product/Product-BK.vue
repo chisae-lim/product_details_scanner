@@ -222,7 +222,37 @@
             </div>
         </div>
     </div>
-    <img ref="imageRef" :hidden="true" alt="Cropped Image" />
+    <div class="modal fade" id="cropper-modal" data-backdrop="static" data-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crop Image</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-9">
+                                <img ref="imageRef" alt="Cropped Image" />
+                            </div>
+                            <div class="col-3">
+                                <div class="d-flex justify-content-center mb-5">
+                                    <div class="preview border border-primary"></div>
+                                </div>
+                                <div class="d-flex justify-content-around">
+                                    <button type="button" data-dismiss="modal" class="btn btn-secondary">Cancel</button>
+                                    <button @click="onImageCropped()" type="button" data-dismiss="modal"
+                                        class="btn btn-primary">Crop</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script setup>
 import Cropper from 'cropperjs';
@@ -250,13 +280,6 @@ const product_columns = [
     {
         accessorKey: 'bar_code',
         header: 'Barcode',
-    },
-    {
-        accessorKey: 'link',
-        header: 'Product Link',
-        cell: (cell) => h('span', {
-            class: 'user-select-all'
-        }, cell.getValue()),
     },
     {
         accessorKey: 'name_en',
@@ -339,6 +362,33 @@ onMounted(async () => {
 
         original_images.value = [];
         edited_images.value = [];
+    });
+
+    $('#cropper-modal').on('shown.bs.modal', function () {
+        //114px = 3cm, 152px = 4cm, 189px = 5cm, 227px = 6cm
+        const imageWidth = 454;
+        const imageHeight = 454;
+        const finalAspectRatio = imageWidth / imageHeight;
+        const imageElement = imageRef.value;
+        cropperRef.value = new Cropper(imageElement, {
+            aspectRatio: finalAspectRatio,
+            dragMode: 'move',
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            zoomOnTouch: false,
+            zoomOnWheel: false,
+            responsive: false,
+            movable: false,
+            zoomable: false,
+            scalable: false,
+            center: true,
+            autoCropArea: 1,
+            viewMode: 0,
+            preview: '.preview',
+        });
+    }).on('hidden.bs.modal', function () {
+        cropperRef.value.destroy();
+        cropperRef.value = null;
     });
 });
 
@@ -533,7 +583,7 @@ const onImageChanged = (e) => {
             return MessageModal('success', 'Success', 'Only jpg/jpeg and png files are allowed!');
         }
 
-        // 1. validate image size
+        // 1
         // const reader = new FileReader();
         // reader.onloadend = function () {
         //     var image = new Image();
@@ -547,44 +597,23 @@ const onImageChanged = (e) => {
         //     };
         // }
 
-        // 2. no validation
+        // 2
         const reader = new FileReader();
         reader.onloadend = function () {
             imageRef.value.src = reader.result;
-            const imageWidth = 454;
-            const imageHeight = 454;
-            const finalAspectRatio = imageWidth / imageHeight;
-            const imageElement = imageRef.value;
-            cropperRef.value = new Cropper(imageElement, {
-                aspectRatio: finalAspectRatio,
-                dragMode: 'move',
-                cropBoxMovable: false,
-                cropBoxResizable: false,
-                zoomOnTouch: false,
-                zoomOnWheel: false,
-                responsive: false,
-                movable: false,
-                zoomable: false,
-                scalable: false,
-                center: true,
-                autoCropArea: 1,
-                viewMode: 0,
-                // preview: '.preview',
-                ready: () => {
-                    const cropped = cropperRef.value.getCroppedCanvas({
-                        width: 454,
-                        height: 454,
-                    });
-                    PRODUCT.images.push(cropped.toDataURL());
-                    cropperRef.value.destroy();
-                    cropperRef.value = null;
-                },
-            });
+            $('#cropper-modal').modal('show');
         }
         reader.readAsDataURL(files[0]);
         e.target.value = null;
-
     }
+}
+const onImageCropped = () => {
+    //114px = 3cm, 152px = 4cm, 189px = 5cm, 227px = 6cm
+    const cropped = cropperRef.value.getCroppedCanvas({
+        width: 454,
+        height: 454,
+    });
+    PRODUCT.images.push(cropped.toDataURL());
 }
 const removeAddingImage = (index) => {
     PRODUCT.images.splice(index, 1);

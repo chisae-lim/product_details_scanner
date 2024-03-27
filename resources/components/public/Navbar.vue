@@ -6,7 +6,7 @@
     </div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
-            <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">Navbar</router-link>
+            <router-link :to="{ name: 'dashboard' }" class="navbar-brand" href="#">Phnom Penh Duty Free Store</router-link>
             <router-link :to="{ name: 'login' }" class="navbar-text ml-auto">
                 <i class="fas fa-sign-in-alt"></i>
             </router-link>

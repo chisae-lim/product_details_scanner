@@ -119,6 +119,6 @@ router.beforeEach(async (to, from) => {
 router.afterEach((to, from, failure) => {
     CloseModal();
     if (!failure) {
-        document.title = 'SchoolMS-' + to.name.toUpperCase()
+        document.title = 'PP DutyFreeStore';
     }
 })
