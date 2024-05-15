@@ -16,7 +16,7 @@ class ColorController extends Controller
     function getColors(Request $request)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
+        $user_id_perm = $this->permittedUser($user, [1, 3], $this->readOnly);
 
         return Color::orderBy('code', 'asc')->orderBy('name', 'asc')->get();
     }

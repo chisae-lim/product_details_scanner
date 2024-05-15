@@ -16,7 +16,7 @@ class UnitController extends Controller
     function getUnits(Request $request)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
+        $user_id_perm = $this->permittedUser($user, [1, 3], $this->readOnly);
 
         return Unit::orderBy('name', 'asc')->get();
     }

@@ -16,7 +16,7 @@ class BrandController extends Controller
     function getBrands(Request $request)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
+        $user_id_perm = $this->permittedUser($user, [1, 3], $this->readOnly);
 
         return Brand::orderBy('name', 'asc')->get();
     }

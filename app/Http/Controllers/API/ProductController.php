@@ -21,7 +21,7 @@ class ProductController extends Controller
     function getProducts(Request $request)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
+        $user_id_perm = $this->permittedUser($user, [1, 3], $this->readOnly);
 
         return Product::with(['images', 'colors', 'category', 'unit', 'brand', 'created_by', 'updated_by'])
             ->orderBy('p_code', 'asc')
@@ -33,7 +33,7 @@ class ProductController extends Controller
     function createProduct(Request $request)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1]);
+        $user_id_perm = $this->permittedUser($user, [1, 3]);
         $customErrorMessage = [
             'p_code.required' => 'Product code is required.',
             'bar_code.required' => 'Barcode is required.',
@@ -77,13 +77,13 @@ class ProductController extends Controller
                 $exceptions['bar_code'] = 'The Bar Code is already existed.';
             }
         }
-        if (!empty ($exceptions)) {
+        if (!empty($exceptions)) {
             throw ValidationException::withMessages($exceptions);
         }
         try {
             DB::beginTransaction();
             $image_names = [];
-            if (!empty ($images)) {
+            if (!empty($images)) {
                 $index = 0;
                 foreach ($images as $image) {
                     $image_names[] = $this->storeImage($image, 'products', $index);
@@ -138,7 +138,7 @@ class ProductController extends Controller
     function updateProduct(Request $request)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1]);
+        $user_id_perm = $this->permittedUser($user, [1, 3]);
         $customErrorMessage = [
             'p_code.required' => 'Product code is required.',
             'bar_code.required' => 'Barcode is required.',
@@ -189,7 +189,7 @@ class ProductController extends Controller
                 $exceptions['bar_code'] = 'The Bar Code is already existed.';
             }
         }
-        if (!empty ($exceptions)) {
+        if (!empty($exceptions)) {
             throw ValidationException::withMessages($exceptions);
         }
 
@@ -218,7 +218,7 @@ class ProductController extends Controller
 
             // add images
             $image_names = [];
-            if (!empty ($images)) {
+            if (!empty($images)) {
                 $index = 0;
                 foreach ($images as $image) {
                     $image_names[] = $this->storeImage($image, 'products', $index);
@@ -286,7 +286,7 @@ class ProductController extends Controller
     function readProduct(Request $request, $id_product)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1], $this->readOnly);
+        $user_id_perm = $this->permittedUser($user, [1, 3], $this->readOnly);
 
         $product = Product::where('id_product', $id_product)
             ->with(['images', 'colors', 'category', 'unit', 'brand', 'created_by', 'updated_by'])
@@ -299,7 +299,7 @@ class ProductController extends Controller
     function deleteProduct(Request $request, $id_product)
     {
         $user = $request->user;
-        $user_id_perm = $this->permittedUser($user, [1]);
+        $user_id_perm = $this->permittedUser($user, [1, 3]);
 
         $product = Product::where('id_product', $id_product)
             ->with(['created_by', 'updated_by'])

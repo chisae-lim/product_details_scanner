@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('name_en', 150);
             $table->string('name_ch', 150);
             $table->decimal('price', 10, 3);
-            $table->string('description', 500)->nullable();
+            $table->string('description', 5000)->nullable();
             // $table->integer('length');
             // $table->integer('width');
             // $table->integer('height');
